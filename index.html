@@ -1,0 +1,2162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>南充卫生职业学院考勤系统 - 修复版</title>
+    
+    <!-- External Dependencies -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary-color: #1e3a8a;
+            --secondary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --neutral-dark: #374151;
+            --neutral-medium: #6b7280;
+            --neutral-light: #9ca3af;
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --shadow-light: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--neutral-dark);
+        }
+
+        .container-fluid {
+            padding: 0;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--bg-card);
+            box-shadow: var(--shadow-light);
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .current-time {
+            font-size: 1rem;
+            color: var(--neutral-medium);
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 80px;
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-medium);
+            border: none;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 1.5rem;
+            border: none;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Form Styles */
+        .form-control, .form-select {
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            box-shadow: var(--shadow-medium);
+            overflow: hidden;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .login-header h2 {
+            font-family: 'Noto Serif SC', serif;
+            margin: 0;
+            font-size: 1.75rem;
+        }
+
+        .login-body {
+            padding: 2rem;
+        }
+
+        .login-type-selector {
+            display: flex;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--primary-color);
+        }
+
+        .login-type-btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: white;
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .login-type-btn.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-light);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--neutral-medium);
+            font-size: 0.9rem;
+        }
+
+        /* Check-in Styles */
+        .checkin-container {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .checkin-btn {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            margin: 1rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .checkin-btn i {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .location-status {
+            margin: 1rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .location-valid {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .location-invalid {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin: 2rem 0;
+        }
+
+        /* Table Styles */
+        .table {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow-light);
+        }
+
+        .table th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            border: none;
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-color: #e5e7eb;
+            vertical-align: middle;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .badge-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+        }
+
+        /* Admin Navigation */
+        .admin-nav {
+            background: var(--bg-card);
+            border-radius: 12px;
+            box-shadow: var(--shadow-light);
+            margin-bottom: 2rem;
+        }
+
+        .admin-nav .nav-link {
+            color: var(--neutral-dark);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 0.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .admin-nav .nav-link:hover {
+            background: #f3f4f6;
+            color: var(--primary-color);
+        }
+
+        .admin-nav .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Data Management Styles */
+        .data-management {
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        .backup-section {
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+
+        /* Location Fallback */
+        .location-fallback {
+            background: rgba(245, 158, 11, 0.05);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .header h1 {
+                font-size: 1.25rem;
+            }
+
+            .main-content {
+                margin-top: 120px;
+                padding: 1rem;
+            }
+
+            .checkin-btn {
+                width: 150px;
+                height: 150px;
+                font-size: 1rem;
+            }
+
+            .checkin-btn i {
+                font-size: 2rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Manual location input */
+        .manual-location {
+            background: rgba(239, 68, 68, 0.05);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Login Page -->
+        <div id="loginPage" class="login-container">
+            <div class="login-card fade-in">
+                <div class="login-header">
+                    <h2><i class="fas fa-school me-2"></i>南充卫生职业学院</h2>
+                    <p class="mb-0">考勤管理系统 - 修复版</p>
+                </div>
+                <div class="login-body">
+                    <div class="login-type-selector">
+                        <button class="login-type-btn active" onclick="switchLoginType('user')">
+                            <i class="fas fa-user me-2"></i>职工登录
+                        </button>
+                        <button class="login-type-btn" onclick="switchLoginType('admin')">
+                            <i class="fas fa-user-shield me-2"></i>管理员登录
+                        </button>
+                    </div>
+                    
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="mb-3">
+                            <label for="username" class="form-label">工号/用户名</label>
+                            <input type="text" class="form-control" id="username" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">密码</label>
+                            <input type="password" class="form-control" id="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>登录
+                        </button>
+                    </form>
+                    
+                    <div class="mt-3 text-center">
+                        <small class="text-muted">初始密码：123</small>
+                    </div>
+
+                    <!-- Data Recovery Section -->
+                    <div class="data-management mt-4">
+                        <h6><i class="fas fa-database me-2"></i>数据管理</h6>
+                        <div class="mt-2">
+                            <button class="btn btn-sm btn-success" onclick="exportAllData()">
+                                <i class="fas fa-download me-1"></i>导出数据
+                            </button>
+                            <button class="btn btn-sm btn-primary" onclick="document.getElementById('importFile').click()">
+                                <i class="fas fa-upload me-1"></i>导入数据
+                            </button>
+                            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App -->
+        <div id="mainApp" class="hidden">
+            <!-- Header -->
+            <header class="header">
+                <h1><i class="fas fa-school me-2"></i>南充卫生职业学院考勤系统</h1>
+                <div class="d-flex align-items-center">
+                    <div class="current-time me-3" id="currentTime"></div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user me-1"></i><span id="currentUserName"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="showChangePasswordModal()">
+                                <i class="fas fa-key me-2"></i>修改密码
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="showDataManagement()">
+                                <i class="fas fa-database me-2"></i>数据管理
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="logout()">
+                                <i class="fas fa-sign-out-alt me-2"></i>退出登录
+                            </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <!-- User Dashboard -->
+                <div id="userDashboard" class="hidden">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="mb-0"><i class="fas fa-clock me-2"></i>打卡中心</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="checkin-container">
+                                        <!-- Location Status -->
+                                        <div class="location-status" id="locationStatus">
+                                            <i class="fas fa-map-marker-alt me-2"></i>
+                                            正在获取位置信息...
+                                        </div>
+
+                                        <!-- Manual Location Input Fallback -->
+                                        <div class="manual-location hidden" id="manualLocation">
+                                            <h6><i class="fas fa-exclamation-triangle me-2"></i>位置获取失败</h6>
+                                            <p class="mb-2">请选择您的位置状态：</p>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-success" onclick="setManualLocation('in_range')">
+                                                    <i class="fas fa-check me-1"></i>在校内
+                                                </button>
+                                                <button class="btn btn-sm btn-danger" onclick="setManualLocation('out_range')">
+                                                    <i class="fas fa-times me-1"></i>在校外
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4">
+                                            <button id="checkInBtn" class="checkin-btn btn btn-success" onclick="checkIn()" disabled>
+                                                <i class="fas fa-sign-in-alt"></i>
+                                                <div>上班打卡</div>
+                                                <small id="checkInTime">--:--</small>
+                                            </button>
+                                            
+                                            <button id="checkOutBtn" class="checkin-btn btn btn-warning" onclick="checkOut()" disabled>
+                                                <i class="fas fa-sign-out-alt"></i>
+                                                <div>下班打卡</div>
+                                                <small id="checkOutTime">--:--</small>
+                                            </button>
+                                        </div>
+                                        
+                                        <div class="mt-4" id="todayStatus">
+                                            <h5>今日考勤状态</h5>
+                                            <div class="row mt-3">
+                                                <div class="col-6">
+                                                    <div class="stat-card">
+                                                        <div class="stat-number" id="checkInStatus">未打卡</div>
+                                                        <div class="stat-label">上班状态</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="stat-card">
+                                                        <div class="stat-number" id="checkOutStatus">未打卡</div>
+                                                        <div class="stat-label">下班状态</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="mb-0"><i class="fas fa-chart-pie me-2"></i>本月统计</h3>
+                                </div>
+                                <div class="card-body">
+                                    <div class="dashboard-grid">
+                                        <div class="stat-card">
+                                            <div class="stat-number text-success" id="workDays">0</div>
+                                            <div class="stat-label">出勤天数</div>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-number text-warning" id="lateDays">0</div>
+                                            <div class="stat-label">迟到次数</div>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-number text-warning" id="earlyDays">0</div>
+                                            <div class="stat-label">早退次数</div>
+                                        </div>
+                                        <div class="stat-card">
+                                            <div class="stat-number text-danger" id="absentDays">0</div>
+                                            <div class="stat-label">缺勤天数</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="text-center mt-3">
+                                        <h5 class="text-danger">扣款金额：<span id="totalDeduction">¥0</span></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-chart-bar me-2"></i>考勤趋势图</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-container">
+                                <canvas id="attendanceChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <h3 class="mb-0"><i class="fas fa-list-alt me-2"></i>考勤明细</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>日期</th>
+                                            <th>上班时间</th>
+                                            <th>下班时间</th>
+                                            <th>状态</th>
+                                            <th>位置</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="attendanceDetail">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Dashboard -->
+                <div id="adminDashboard" class="hidden">
+                    <div class="admin-nav">
+                        <ul class="nav nav-pills" id="adminTabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#" onclick="switchAdminTab('statistics')">
+                                    <i class="fas fa-chart-line me-2"></i>考勤统计
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="switchAdminTab('users')">
+                                    <i class="fas fa-users me-2"></i>人员管理
+                                </a>
+                            </li>
+                            <li class="nav-item" id="supplementTab">
+                                <a class="nav-link" href="#" onclick="switchAdminTab('supplement')">
+                                    <i class="fas fa-plus-circle me-2"></i>补卡管理
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#" onclick="switchAdminTab('export')">
+                                    <i class="fas fa-download me-2"></i>数据导出
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Statistics Tab -->
+                    <div id="statisticsTab" class="admin-tab-content">
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="stat-card">
+                                    <div class="stat-number text-primary" id="totalEmployees">0</div>
+                                    <div class="stat-label">总职工数</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="stat-card">
+                                    <div class="stat-number text-success" id="totalDepartments">0</div>
+                                    <div class="stat-label">部门数</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="stat-card">
+                                    <div class="stat-number text-info" id="todayAttendance">0%</div>
+                                    <div class="stat-label">今日出勤率</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="stat-card">
+                                    <div class="stat-number text-warning" id="monthlyAvg">0%</div>
+                                    <div class="stat-label">月平均出勤率</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-4">
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="mb-0">部门出勤率排名</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="departmentChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h4 class="mb-0">考勤状态分布</h4>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="statusChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users Management Tab -->
+                    <div id="usersTab" class="admin-tab-content hidden">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h4 class="mb-0">人员管理</h4>
+                                <button class="btn btn-success" onclick="showAddUserModal()">
+                                    <i class="fas fa-plus me-2"></i>添加职工
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>工号</th>
+                                                <th>姓名</th>
+                                                <th>部门</th>
+                                                <th>角色</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="usersTable">
+                                            <!-- Dynamic content -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Supplement Tab -->
+                    <div id="supplementContent" class="admin-tab-content hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">补卡管理</h4>
+                            </div>
+                            <div class="card-body">
+                                <form id="supplementForm" onsubmit="handleSupplement(event)">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <label class="form-label">选择职工</label>
+                                            <select class="form-select" id="supplementUser" required>
+                                                <!-- Dynamic options -->
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">日期</label>
+                                            <input type="date" class="form-control" id="supplementDate" required>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">打卡类型</label>
+                                            <select class="form-select" id="supplementType" required>
+                                                <option value="checkIn">上班打卡</option>
+                                                <option value="checkOut">下班打卡</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class="form-label">时间</label>
+                                            <input type="time" class="form-control" id="supplementTime" required>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-plus me-2"></i>补录打卡
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Export Tab -->
+                    <div id="exportTab" class="admin-tab-content hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h4 class="mb-0">数据导出</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h5>导出当月考勤数据</h5>
+                                        <p class="text-muted">导出包含所有职工考勤记录的CSV文件</p>
+                                        <button class="btn btn-primary" onclick="exportAttendanceData()">
+                                            <i class="fas fa-download me-2"></i>导出CSV
+                                        </button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5>导出职工信息</h5>
+                                        <p class="text-muted">导出所有职工的基本信息</p>
+                                        <button class="btn btn-success" onclick="exportUserData()">
+                                            <i class="fas fa-download me-2"></i>导出职工信息
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Data Management Modal -->
+        <div class="modal fade" id="dataManagementModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">数据管理中心</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="backup-section">
+                                    <h6><i class="fas fa-download me-2"></i>数据备份</h6>
+                                    <p class="small text-muted">定期备份数据，防止意外丢失</p>
+                                    <button class="btn btn-success btn-sm" onclick="exportAllData()">
+                                        <i class="fas fa-download me-1"></i>立即备份
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="data-management">
+                                    <h6><i class="fas fa-upload me-2"></i>数据恢复</h6>
+                                    <p class="small text-muted">从备份文件恢复数据</p>
+                                    <button class="btn btn-primary btn-sm" onclick="document.getElementById('restoreFile').click()">
+                                        <i class="fas fa-upload me-1"></i>选择文件
+                                    </button>
+                                    <input type="file" id="restoreFile" accept=".json" style="display: none;" onchange="restoreData(event)">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <h6><i class="fas fa-info-circle me-2"></i>数据存储说明</h6>
+                            <div class="alert alert-info">
+                                <ul class="mb-0">
+                                    <li>系统使用浏览器本地存储保存数据</li>
+                                    <li>建议定期导出备份，防止浏览器清理数据</li>
+                                    <li>更换设备时需要重新导入数据</li>
+                                    <li>数据包含所有用户信息、考勤记录和系统设置</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Change Password Modal -->
+        <div class="modal fade" id="changePasswordModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">修改密码</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="changePasswordForm" onsubmit="handleChangePassword(event)">
+                            <div class="mb-3">
+                                <label class="form-label">原密码</label>
+                                <input type="password" class="form-control" id="oldPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">新密码</label>
+                                <input type="password" class="form-control" id="newPassword" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">确认新密码</label>
+                                <input type="password" class="form-control" id="confirmPassword" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">确认修改</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add User Modal -->
+        <div class="modal fade" id="addUserModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">添加职工</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addUserForm" onsubmit="handleAddUser(event)">
+                            <div class="mb-3">
+                                <label class="form-label">工号</label>
+                                <input type="text" class="form-control" id="newUserId" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">姓名</label>
+                                <input type="text" class="form-control" id="newUserName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">部门</label>
+                                <select class="form-select" id="newUserDepartment" required>
+                                    <option value="">选择部门</option>
+                                    <option value="综合组">综合组</option>
+                                    <option value="教务组">教务组</option>
+                                    <option value="人事组">人事组</option>
+                                    <option value="后勤组">后勤组</option>
+                                    <option value="护理学教研组">护理学教研组</option>
+                                    <option value="药学教研组">药学教研组</option>
+                                    <option value="康复医学教研组">康复医学教研组</option>
+                                    <option value="检验学教研组">检验学教研组</option>
+                                    <option value="中药学教研组">中药学教研组</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">初始密码</label>
+                                <input type="text" class="form-control" value="123" readonly>
+                                <small class="text-muted">初始密码为123，职工登录后可自行修改</small>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">添加职工</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <script>
+        // Global variables
+        let currentUser = null;
+        let attendanceChart = null;
+        let departmentChart = null;
+        let statusChart = null;
+        let currentLocation = null;
+        let loginType = 'user';
+        let locationStatus = 'unknown';
+
+        // Updated school location coordinates (you provided)
+        const SCHOOL_LOCATION = {
+            lat: 30.781437,  // 北纬30°46′53.173″
+            lng: 106.129357  // 东经106°7′45.685″
+        };
+        const VALID_RADIUS = 1000; // 1km in meters
+
+        // Initialize system
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSystem();
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+            
+            // Check for data recovery on load
+            checkDataRecovery();
+        });
+
+        // System initialization
+        function initializeSystem() {
+            // Initialize default data if not exists
+            if (!localStorage.getItem('ncws_users')) {
+                initializeDefaultData();
+            }
+            
+            // Check if user is already logged in
+            const savedUser = localStorage.getItem('ncws_current_user');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showMainApp();
+            }
+        }
+
+        // Initialize default data
+        function initializeDefaultData() {
+            const defaultUsers = [
+                // Admin users
+                { id: 'admin1', name: '超级管理员', department: '综合组', password: '123', role: 'admin1' },
+                { id: 'admin2', name: '管理员2', department: '综合组', password: '123', role: 'admin2' },
+                { id: 'admin3', name: '管理员3', department: '综合组', password: '123', role: 'admin3' },
+                // Sample employees
+                { id: '2025001', name: '张三', department: '教务组', password: '123', role: 'user' },
+                { id: '2025002', name: '李四', department: '人事组', password: '123', role: 'user' },
+                { id: '2025003', name: '王五', department: '后勤组', password: '123', role: 'user' },
+                { id: '2025004', name: '赵六', department: '护理学教研组', password: '123', role: 'user' },
+                { id: '2025005', name: '孙七', department: '药学教研组', password: '123', role: 'user' }
+            ];
+
+            localStorage.setItem('ncws_users', JSON.stringify(defaultUsers));
+            localStorage.setItem('ncws_attendance', JSON.stringify([]));
+            localStorage.setItem('ncws_system_version', '2.0');
+            localStorage.setItem('ncws_last_backup', new Date().toISOString());
+        }
+
+        // Update current time
+        function updateCurrentTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const timeElement = document.getElementById('currentTime');
+            if (timeElement) {
+                timeElement.textContent = timeString;
+            }
+        }
+
+        // Switch login type
+        function switchLoginType(type) {
+            loginType = type;
+            const buttons = document.querySelectorAll('.login-type-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            buttons[type === 'user' ? 0 : 1].classList.add('active');
+        }
+
+        // Handle login
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            const users = JSON.parse(localStorage.getItem('ncws_users') || '[]');
+            const user = users.find(u => u.id === username && u.password === password);
+            
+            if (!user) {
+                alert('用户名或密码错误！');
+                return;
+            }
+            
+            // Check role permission
+            if (loginType === 'user' && user.role !== 'user') {
+                alert('请使用管理员登录入口！');
+                return;
+            }
+            if (loginType === 'admin' && user.role === 'user') {
+                alert('您没有管理员权限！');
+                return;
+            }
+            
+            currentUser = user;
+            localStorage.setItem('ncws_current_user', JSON.stringify(user));
+            showMainApp();
+        }
+
+        // Show main application
+        function showMainApp() {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            
+            document.getElementById('currentUserName').textContent = currentUser.name;
+            
+            if (currentUser.role === 'user') {
+                showUserDashboard();
+            } else {
+                showAdminDashboard();
+            }
+        }
+
+        // Show user dashboard
+        function showUserDashboard() {
+            document.getElementById('userDashboard').classList.remove('hidden');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            
+            // Get location with improved error handling
+            getCurrentLocation();
+            
+            // Update UI
+            updateUserDashboard();
+            
+            // Initialize charts
+            setTimeout(() => {
+                initAttendanceChart();
+            }, 100);
+        }
+
+        // Show admin dashboard
+        function showAdminDashboard() {
+            document.getElementById('userDashboard').classList.add('hidden');
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            
+            // Show/hide supplement tab based on role
+            const supplementTab = document.getElementById('supplementTab');
+            if (currentUser.role === 'admin1') {
+                supplementTab.classList.remove('hidden');
+            } else {
+                supplementTab.classList.add('hidden');
+            }
+            
+            // Update admin dashboard
+            updateAdminDashboard();
+            
+            // Initialize admin charts
+            setTimeout(() => {
+                initAdminCharts();
+            }, 100);
+        }
+
+        // Get current location with fallback
+        function getCurrentLocation() {
+            if (!navigator.geolocation) {
+                showLocationError('浏览器不支持地理位置功能');
+                return;
+            }
+            
+            // Try to get location with high accuracy
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    currentLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    
+                    const distance = calculateDistance(
+                        currentLocation.lat,
+                        currentLocation.lng,
+                        SCHOOL_LOCATION.lat,
+                        SCHOOL_LOCATION.lng
+                    );
+                    
+                    const isValid = distance <= VALID_RADIUS;
+                    locationStatus = isValid ? 'in_range' : 'out_range';
+                    
+                    updateLocationStatus(
+                        isValid ? '您已在考勤范围内（距离：' + Math.round(distance) + '米）' : 
+                                 '您当前不在考勤范围内（距离：' + Math.round(distance) + '米）',
+                        isValid
+                    );
+                    
+                    updateCheckInButtons(isValid);
+                },
+                function(error) {
+                    let message = '无法获取位置信息';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message = '请允许获取地理位置权限，或手动选择位置状态';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message = '位置信息不可用，请检查网络连接';
+                            break;
+                        case error.TIMEOUT:
+                            message = '获取位置超时，请手动选择位置状态';
+                            break;
+                    }
+                    showLocationError(message);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 300000
+                }
+            );
+        }
+
+        // Show location error and fallback
+        function showLocationError(message) {
+            const statusElement = document.getElementById('locationStatus');
+            statusElement.textContent = message;
+            statusElement.className = 'location-invalid';
+            
+            // Show manual location selector
+            document.getElementById('manualLocation').classList.remove('hidden');
+            
+            // Disable check-in buttons until location is set
+            updateCheckInButtons(false);
+        }
+
+        // Set manual location
+        function setManualLocation(status) {
+            locationStatus = status;
+            const isValid = status === 'in_range';
+            
+            const statusElement = document.getElementById('locationStatus');
+            statusElement.textContent = isValid ? '位置状态：在校内' : '位置状态：在校外';
+            statusElement.className = isValid ? 'location-valid' : 'location-invalid';
+            
+            // Hide manual location selector
+            document.getElementById('manualLocation').classList.add('hidden');
+            
+            // Update buttons
+            updateCheckInButtons(isValid);
+            
+            // Set a default location for manual selection
+            currentLocation = isValid ? SCHOOL_LOCATION : null;
+        }
+
+        // Calculate distance between two points
+        function calculateDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371e3; // Earth's radius in meters
+            const φ1 = lat1 * Math.PI/180;
+            const φ2 = lat2 * Math.PI/180;
+            const Δφ = (lat2-lat1) * Math.PI/180;
+            const Δλ = (lng2-lng1) * Math.PI/180;
+
+            const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
+                      Math.cos(φ1) * Math.cos(φ2) *
+                      Math.sin(Δλ/2) * Math.sin(Δλ/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+            return R * c;
+        }
+
+        // Update location status
+        function updateLocationStatus(message, isValid) {
+            const statusElement = document.getElementById('locationStatus');
+            statusElement.textContent = message;
+            statusElement.className = isValid ? 'location-valid' : 'location-invalid';
+        }
+
+        // Update check-in buttons
+        function updateCheckInButtons(isLocationValid) {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const timeInMinutes = hour * 60 + minute;
+            
+            // Check-in time: 08:30 - 12:00 (510 - 720 minutes)
+            const canCheckIn = timeInMinutes >= 510 && timeInMinutes <= 720;
+            // Check-out time: 17:00 - 18:00 (1020 - 1080 minutes)
+            const canCheckOut = timeInMinutes >= 1020 && timeInMinutes <= 1080;
+            
+            const checkInBtn = document.getElementById('checkInBtn');
+            const checkOutBtn = document.getElementById('checkOutBtn');
+            
+            // Check if already checked in/out today
+            const today = new Date().toISOString().split('T')[0];
+            const attendanceRecords = getAttendanceData();
+            const todayRecord = attendanceRecords.find(r => r.userId === currentUser.id && r.date === today);
+            
+            if (todayRecord?.checkIn) {
+                checkInBtn.disabled = true;
+                checkInBtn.innerHTML = `<i class="fas fa-check"></i><div>已打卡</div><small>${todayRecord.checkIn}</small>`;
+            } else {
+                checkInBtn.disabled = !isLocationValid || !canCheckIn;
+            }
+            
+            if (todayRecord?.checkOut) {
+                checkOutBtn.disabled = true;
+                checkOutBtn.innerHTML = `<i class="fas fa-check"></i><div>已打卡</div><small>${todayRecord.checkOut}</small>`;
+            } else {
+                checkOutBtn.disabled = !isLocationValid || !canCheckOut;
+            }
+        }
+
+        // Check in function
+        function checkIn() {
+            if (!currentLocation && locationStatus !== 'in_range') {
+                alert('无法获取位置信息，请确认您在校内后再试');
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const checkInTime = now.toTimeString().slice(0, 5);
+            
+            const attendanceRecords = getAttendanceData();
+            let todayRecord = attendanceRecords.find(r => r.userId === currentUser.id && r.date === today);
+            
+            if (!todayRecord) {
+                todayRecord = {
+                    userId: currentUser.id,
+                    date: today,
+                    checkIn: checkInTime,
+                    checkOut: null,
+                    locationIn: currentLocation || SCHOOL_LOCATION,
+                    locationOut: null,
+                    status: 'normal',
+                    locationStatus: locationStatus
+                };
+                attendanceRecords.push(todayRecord);
+            } else {
+                todayRecord.checkIn = checkInTime;
+                todayRecord.locationIn = currentLocation || SCHOOL_LOCATION;
+                todayRecord.locationStatus = locationStatus;
+            }
+            
+            // Determine status
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            if (hour > 9 || (hour === 9 && minute > 0)) {
+                todayRecord.status = 'late';
+            }
+            
+            saveAttendanceData(attendanceRecords);
+            
+            // Update UI
+            updateUserDashboard();
+            updateCheckInButtons(true);
+            
+            // Show success message
+            alert('上班打卡成功！' + (todayRecord.status === 'late' ? '（迟到）' : ''));
+        }
+
+        // Check out function
+        function checkOut() {
+            if (!currentLocation && locationStatus !== 'in_range') {
+                alert('无法获取位置信息，请确认您在校内后再试');
+                return;
+            }
+            
+            const today = new Date().toISOString().split('T')[0];
+            const now = new Date();
+            const checkOutTime = now.toTimeString().slice(0, 5);
+            
+            const attendanceRecords = getAttendanceData();
+            let todayRecord = attendanceRecords.find(r => r.userId === currentUser.id && r.date === today);
+            
+            if (!todayRecord) {
+                todayRecord = {
+                    userId: currentUser.id,
+                    date: today,
+                    checkIn: null,
+                    checkOut: checkOutTime,
+                    locationIn: null,
+                    locationOut: currentLocation || SCHOOL_LOCATION,
+                    status: 'normal',
+                    locationStatus: locationStatus
+                };
+                attendanceRecords.push(todayRecord);
+            } else {
+                todayRecord.checkOut = checkOutTime;
+                todayRecord.locationOut = currentLocation || SCHOOL_LOCATION;
+                todayRecord.locationStatus = locationStatus;
+            }
+            
+            // Determine status
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            if (hour < 17 || (hour === 17 && minute === 0)) {
+                if (todayRecord.status === 'late') {
+                    todayRecord.status = 'late_early';
+                } else {
+                    todayRecord.status = 'early';
+                }
+            } else if (todayRecord.status === 'late') {
+                todayRecord.status = 'late';
+            }
+            
+            saveAttendanceData(attendanceRecords);
+            
+            // Update UI
+            updateUserDashboard();
+            updateCheckInButtons(true);
+            
+            // Show success message
+            alert('下班打卡成功！' + (todayRecord.status.includes('early') ? '（早退）' : ''));
+        }
+
+        // Update user dashboard
+        function updateUserDashboard() {
+            const today = new Date().toISOString().split('T')[0];
+            const attendanceRecords = getAttendanceData();
+            const userRecords = attendanceRecords.filter(r => r.userId === currentUser.id);
+            
+            // Update today's status
+            const todayRecord = userRecords.find(r => r.date === today);
+            
+            document.getElementById('checkInStatus').textContent = 
+                todayRecord?.checkIn ? todayRecord.checkIn : '未打卡';
+            document.getElementById('checkOutStatus').textContent = 
+                todayRecord?.checkOut ? todayRecord.checkOut : '未打卡';
+            
+            // Update monthly statistics
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyRecords = userRecords.filter(r => r.date.startsWith(currentMonth));
+            
+            let workDays = 0, lateDays = 0, earlyDays = 0, absentDays = 0, totalDeduction = 0;
+            
+            monthlyRecords.forEach(record => {
+                if (record.checkIn && record.checkOut) {
+                    workDays++;
+                    if (record.status === 'late') lateDays++;
+                    if (record.status === 'early') earlyDays++;
+                    if (record.status === 'late_early') {
+                        lateDays++;
+                        earlyDays++;
+                    }
+                } else {
+                    absentDays++;
+                }
+            });
+            
+            // Calculate deduction
+            if (lateDays > 3) totalDeduction += (lateDays - 3) * 20;
+            if (earlyDays > 3) totalDeduction += (earlyDays - 3) * 20;
+            totalDeduction += absentDays * 50; // 50 yuan per day
+            
+            document.getElementById('workDays').textContent = workDays;
+            document.getElementById('lateDays').textContent = lateDays;
+            document.getElementById('earlyDays').textContent = earlyDays;
+            document.getElementById('absentDays').textContent = absentDays;
+            document.getElementById('totalDeduction').textContent = `¥${totalDeduction}`;
+            
+            // Update attendance detail table
+            updateAttendanceDetail(userRecords);
+        }
+
+        // Update attendance detail table
+        function updateAttendanceDetail(records) {
+            const tbody = document.getElementById('attendanceDetail');
+            const sortedRecords = records.sort((a, b) => new Date(b.date) - new Date(a.date));
+            
+            tbody.innerHTML = sortedRecords.map(record => {
+                let statusBadge = '';
+                let statusText = '';
+                let locationText = record.locationStatus === 'in_range' ? '校内' : '校外';
+                
+                switch(record.status) {
+                    case 'normal':
+                        statusBadge = 'badge-success';
+                        statusText = '正常';
+                        break;
+                    case 'late':
+                        statusBadge = 'badge-warning';
+                        statusText = '迟到';
+                        break;
+                    case 'early':
+                        statusBadge = 'badge-warning';
+                        statusText = '早退';
+                        break;
+                    case 'late_early':
+                        statusBadge = 'badge-danger';
+                        statusText = '迟到+早退';
+                        break;
+                    default:
+                        statusBadge = 'badge-success';
+                        statusText = '正常';
+                }
+                
+                return `
+                    <tr>
+                        <td>${record.date}</td>
+                        <td>${record.checkIn || '--:--'}</td>
+                        <td>${record.checkOut || '--:--'}</td>
+                        <td><span class="badge ${statusBadge}">${statusText}</span></td>
+                        <td>${locationText}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Initialize attendance chart
+        function initAttendanceChart() {
+            const ctx = document.getElementById('attendanceChart');
+            if (!ctx) return;
+            
+            const attendanceRecords = getAttendanceData();
+            const userRecords = attendanceRecords.filter(r => r.userId === currentUser.id);
+            
+            // Get last 30 days data
+            const last30Days = [];
+            const today = new Date();
+            for (let i = 29; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+                last30Days.push(dateStr);
+            }
+            
+            const chartData = last30Days.map(date => {
+                const record = userRecords.find(r => r.date === date);
+                return record ? 1 : 0;
+            });
+            
+            if (attendanceChart) {
+                attendanceChart.destroy();
+            }
+            
+            attendanceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: last30Days.map(date => date.slice(5)),
+                    datasets: [{
+                        label: '出勤状态',
+                        data: chartData,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1,
+                            ticks: {
+                                stepSize: 1,
+                                callback: function(value) {
+                                    return value === 1 ? '出勤' : '缺勤';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Data management functions
+        function getAttendanceData() {
+            return JSON.parse(localStorage.getItem('ncws_attendance') || '[]');
+        }
+
+        function saveAttendanceData(data) {
+            localStorage.setItem('ncws_attendance', JSON.stringify(data));
+            // Auto backup
+            autoBackup();
+        }
+
+        function getUsersData() {
+            return JSON.parse(localStorage.getItem('ncws_users') || '[]');
+        }
+
+        function saveUsersData(data) {
+            localStorage.setItem('ncws_users', JSON.stringify(data));
+            // Auto backup
+            autoBackup();
+        }
+
+        // Auto backup function
+        function autoBackup() {
+            const backupData = {
+                users: getUsersData(),
+                attendance: getAttendanceData(),
+                timestamp: new Date().toISOString(),
+                version: '2.0'
+            };
+            
+            localStorage.setItem('ncws_auto_backup', JSON.stringify(backupData));
+            localStorage.setItem('ncws_last_backup', new Date().toISOString());
+        }
+
+        // Check for data recovery
+        function checkDataRecovery() {
+            const autoBackup = localStorage.getItem('ncws_auto_backup');
+            if (autoBackup) {
+                const backupData = JSON.parse(autoBackup);
+                const lastBackup = new Date(backupData.timestamp);
+                const now = new Date();
+                const daysDiff = (now - lastBackup) / (1000 * 60 * 60 * 24);
+                
+                if (daysDiff > 7) {
+                    console.log('备份数据超过7天，建议重新备份');
+                }
+            }
+        }
+
+        // Export all data
+        function exportAllData() {
+            const exportData = {
+                users: getUsersData(),
+                attendance: getAttendanceData(),
+                timestamp: new Date().toISOString(),
+                version: '2.0',
+                export_by: currentUser ? currentUser.name : '未知用户'
+            };
+            
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = `考勤系统备份_${new Date().toISOString().slice(0, 10)}.json`;
+            link.click();
+            
+            alert('数据导出成功！请妥善保存备份文件。');
+        }
+
+        // Import data
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importData = JSON.parse(e.target.result);
+                    
+                    if (confirm('导入数据将覆盖现有数据，确定继续吗？')) {
+                        if (importData.users) {
+                            saveUsersData(importData.users);
+                        }
+                        if (importData.attendance) {
+                            saveAttendanceData(importData.attendance);
+                        }
+                        
+                        alert('数据导入成功！系统将重新加载。');
+                        location.reload();
+                    }
+                } catch (error) {
+                    alert('数据导入失败，请检查文件格式！');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Restore data
+        function restoreData(event) {
+            importData(event);
+        }
+
+        // Show data management modal
+        function showDataManagement() {
+            const modal = new bootstrap.Modal(document.getElementById('dataManagementModal'));
+            modal.show();
+        }
+
+        // Update admin dashboard
+        function updateAdminDashboard() {
+            const users = getUsersData();
+            const attendanceRecords = getAttendanceData();
+            
+            // Basic statistics
+            document.getElementById('totalEmployees').textContent = users.filter(u => u.role === 'user').length;
+            document.getElementById('totalDepartments').textContent = new Set(users.map(u => u.department)).size;
+            
+            // Today's attendance
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = attendanceRecords.filter(r => r.date === today);
+            const todayAttendanceRate = users.length > 0 ? Math.round((todayRecords.length / users.length) * 100) : 0;
+            document.getElementById('todayAttendance').textContent = todayAttendanceRate + '%';
+            
+            // Monthly average attendance
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            const monthlyRecords = attendanceRecords.filter(r => r.date.startsWith(currentMonth));
+            const monthlyAttendanceRate = users.length > 0 ? Math.round((monthlyRecords.length / (users.length * 30)) * 100) : 0;
+            document.getElementById('monthlyAvg').textContent = monthlyAttendanceRate + '%';
+            
+            // Update users table
+            updateUsersTable();
+        }
+
+        // Update users table
+        function updateUsersTable() {
+            const users = getUsersData();
+            const tbody = document.getElementById('usersTable');
+            
+            tbody.innerHTML = users.map(user => `
+                <tr>
+                    <td>${user.id}</td>
+                    <td>${user.name}</td>
+                    <td>${user.department}</td>
+                    <td>
+                        <span class="badge ${user.role === 'user' ? 'badge-success' : 'badge-warning'}">
+                            ${user.role === 'user' ? '职工' : '管理员'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="editUser('${user.id}')">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="btn btn-sm btn-warning" onclick="resetPassword('${user.id}')">
+                            <i class="fas fa-key"></i>
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteUser('${user.id}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize admin charts
+        function initAdminCharts() {
+            initDepartmentChart();
+            initStatusChart();
+        }
+
+        // Initialize department chart
+        function initDepartmentChart() {
+            const ctx = document.getElementById('departmentChart');
+            if (!ctx) return;
+            
+            const users = getUsersData();
+            const attendanceRecords = getAttendanceData();
+            
+            // Calculate department attendance rates
+            const departments = {};
+            users.forEach(user => {
+                if (user.role === 'user') {
+                    if (!departments[user.department]) {
+                        departments[user.department] = { total: 0, present: 0 };
+                    }
+                    departments[user.department].total++;
+                    
+                    const today = new Date().toISOString().split('T')[0];
+                    if (attendanceRecords.find(r => r.userId === user.id && r.date === today)) {
+                        departments[user.department].present++;
+                    }
+                }
+            });
+            
+            const departmentData = Object.entries(departments).map(([name, data]) => ({
+                name,
+                rate: Math.round((data.present / data.total) * 100)
+            })).sort((a, b) => b.rate - a.rate);
+            
+            if (departmentChart) {
+                departmentChart.destroy();
+            }
+            
+            departmentChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: departmentData.map(d => d.name),
+                    datasets: [{
+                        label: '出勤率',
+                        data: departmentData.map(d => d.rate),
+                        backgroundColor: departmentData.map((d, i) => 
+                            i === 0 ? '#10b981' : // Best team - green
+                            i === departmentData.length - 1 ? '#ef4444' : '#3b82f6' // Worst team - red
+                        ),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: function(value) {
+                                    return value + '%';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize status chart
+        function initStatusChart() {
+            const ctx = document.getElementById('statusChart');
+            if (!ctx) return;
+            
+            const attendanceRecords = getAttendanceData();
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = attendanceRecords.filter(r => r.date === today);
+            
+            const statusCount = {
+                normal: 0,
+                late: 0,
+                early: 0,
+                absent: 0
+            };
+            
+            todayRecords.forEach(record => {
+                if (record.status === 'normal') statusCount.normal++;
+                else if (record.status === 'late') statusCount.late++;
+                else if (record.status === 'early') statusCount.early++;
+                else if (record.status === 'late_early') {
+                    statusCount.late++;
+                    statusCount.early++;
+                }
+            });
+            
+            if (statusChart) {
+                statusChart.destroy();
+            }
+            
+            statusChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['正常', '迟到', '早退'],
+                    datasets: [{
+                        data: [statusCount.normal, statusCount.late, statusCount.early],
+                        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+        }
+
+        // Switch admin tab
+        function switchAdminTab(tabName) {
+            // Update tab navigation
+            const tabs = document.querySelectorAll('#adminTabs .nav-link');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.admin-tab-content');
+            contents.forEach(content => content.classList.add('hidden'));
+            
+            // Show selected tab content
+            const contentMap = {
+                'statistics': 'statisticsTab',
+                'users': 'usersTab',
+                'supplement': 'supplementContent',
+                'export': 'exportTab'
+            };
+            
+            const contentId = contentMap[tabName];
+            if (contentId) {
+                document.getElementById(contentId).classList.remove('hidden');
+                
+                // Initialize supplement form if needed
+                if (tabName === 'supplement') {
+                    initSupplementForm();
+                }
+            }
+        }
+
+        // Initialize supplement form
+        function initSupplementForm() {
+            const users = getUsersData();
+            const userSelect = document.getElementById('supplementUser');
+            
+            userSelect.innerHTML = users.filter(u => u.role === 'user').map(user => 
+                `<option value="${user.id}">${user.name} (${user.department})</option>`
+            ).join('');
+        }
+
+        // Handle supplement
+        function handleSupplement(event) {
+            event.preventDefault();
+            
+            const userId = document.getElementById('supplementUser').value;
+            const date = document.getElementById('supplementDate').value;
+            const type = document.getElementById('supplementType').value;
+            const time = document.getElementById('supplementTime').value;
+            
+            const attendanceRecords = getAttendanceData();
+            let record = attendanceRecords.find(r => r.userId === userId && r.date === date);
+            
+            if (!record) {
+                record = {
+                    userId: userId,
+                    date: date,
+                    checkIn: null,
+                    checkOut: null,
+                    locationIn: SCHOOL_LOCATION,
+                    locationOut: SCHOOL_LOCATION,
+                    status: 'normal',
+                    locationStatus: 'in_range'
+                };
+                attendanceRecords.push(record);
+            }
+            
+            if (type === 'checkIn') {
+                record.checkIn = time;
+            } else {
+                record.checkOut = time;
+            }
+            
+            saveAttendanceData(attendanceRecords);
+            
+            alert('补卡成功！');
+            document.getElementById('supplementForm').reset();
+        }
+
+        // Show change password modal
+        function showChangePasswordModal() {
+            const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+            modal.show();
+        }
+
+        // Handle change password
+        function handleChangePassword(event) {
+            event.preventDefault();
+            
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (oldPassword !== currentUser.password) {
+                alert('原密码错误！');
+                return;
+            }
+            
+            if (newPassword !== confirmPassword) {
+                alert('新密码与确认密码不一致！');
+                return;
+            }
+            
+            const users = getUsersData();
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            
+            if (userIndex !== -1) {
+                users[userIndex].password = newPassword;
+                currentUser.password = newPassword;
+                
+                saveUsersData(users);
+                localStorage.setItem('ncws_current_user', JSON.stringify(currentUser));
+                
+                alert('密码修改成功！');
+                bootstrap.Modal.getInstance(document.getElementById('changePasswordModal')).hide();
+                document.getElementById('changePasswordForm').reset();
+            }
+        }
+
+        // Show add user modal
+        function showAddUserModal() {
+            const modal = new bootstrap.Modal(document.getElementById('addUserModal'));
+            modal.show();
+        }
+
+        // Handle add user
+        function handleAddUser(event) {
+            event.preventDefault();
+            
+            const userId = document.getElementById('newUserId').value;
+            const userName = document.getElementById('newUserName').value;
+            const userDepartment = document.getElementById('newUserDepartment').value;
+            
+            const users = getUsersData();
+            
+            if (users.find(u => u.id === userId)) {
+                alert('该工号已存在！');
+                return;
+            }
+            
+            const newUser = {
+                id: userId,
+                name: userName,
+                department: userDepartment,
+                password: '123',
+                role: 'user'
+            };
+            
+            users.push(newUser);
+            saveUsersData(users);
+            
+            alert('职工添加成功！');
+            bootstrap.Modal.getInstance(document.getElementById('addUserModal')).hide();
+            document.getElementById('addUserForm').reset();
+            updateUsersTable();
+        }
+
+        // Edit user
+        function editUser(userId) {
+            const users = getUsersData();
+            const user = users.find(u => u.id === userId);
+            
+            if (user) {
+                const newName = prompt('请输入新的姓名：', user.name);
+                const newDepartment = prompt('请输入新的部门：', user.department);
+                
+                if (newName && newDepartment) {
+                    user.name = newName;
+                    user.department = newDepartment;
+                    
+                    saveUsersData(users);
+                    updateUsersTable();
+                    alert('职工信息更新成功！');
+                }
+            }
+        }
+
+        // Reset password
+        function resetPassword(userId) {
+            if (confirm('确定要重置该职工的密码为123吗？')) {
+                const users = getUsersData();
+                const user = users.find(u => u.id === userId);
+                
+                if (user) {
+                    user.password = '123';
+                    saveUsersData(users);
+                    alert('密码重置成功！');
+                }
+            }
+        }
+
+        // Delete user
+        function deleteUser(userId) {
+            if (confirm('确定要删除该职工吗？此操作不可恢复！')) {
+                const users = getUsersData();
+                const filteredUsers = users.filter(u => u.id !== userId);
+                
+                saveUsersData(filteredUsers);
+                updateUsersTable();
+                alert('职工删除成功！');
+            }
+        }
+
+        // Export attendance data
+        function exportAttendanceData() {
+            const users = getUsersData();
+            const attendanceRecords = getAttendanceData();
+            const currentMonth = new Date().toISOString().slice(0, 7);
+            
+            const monthlyRecords = attendanceRecords.filter(r => r.date.startsWith(currentMonth));
+            
+            let csvContent = '姓名,部门,出勤天数,迟到次数,早退次数,缺勤天数,扣款金额\n';
+            
+            users.filter(u => u.role === 'user').forEach(user => {
+                const userRecords = monthlyRecords.filter(r => r.userId === user.id);
+                
+                let workDays = 0, lateDays = 0, earlyDays = 0, absentDays = 0, totalDeduction = 0;
+                
+                userRecords.forEach(record => {
+                    if (record.checkIn && record.checkOut) {
+                        workDays++;
+                        if (record.status === 'late') lateDays++;
+                        if (record.status === 'early') earlyDays++;
+                        if (record.status === 'late_early') {
+                            lateDays++;
+                            earlyDays++;
+                        }
+                    } else {
+                        absentDays++;
+                    }
+                });
+                
+                if (lateDays > 3) totalDeduction += (lateDays - 3) * 20;
+                if (earlyDays > 3) totalDeduction += (earlyDays - 3) * 20;
+                totalDeduction += absentDays * 50;
+                
+                csvContent += `${user.name},${user.department},${workDays},${lateDays},${earlyDays},${absentDays},${totalDeduction}\n`;
+            });
+            
+            downloadCSV(csvContent, `考勤数据_${currentMonth}.csv`);
+        }
+
+        // Export user data
+        function exportUserData() {
+            const users = getUsersData();
+            
+            let csvContent = '工号,姓名,部门,角色\n';
+            
+            users.forEach(user => {
+                csvContent += `${user.id},${user.name},${user.department},${user.role}\n`;
+            });
+            
+            downloadCSV(csvContent, '职工信息.csv');
+        }
+
+        // Download CSV file
+        function downloadCSV(csvContent, filename) {
+            const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            if (link.download !== undefined) {
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', filename);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            if (confirm('确定要退出登录吗？')) {
+                localStorage.removeItem('ncws_current_user');
+                currentUser = null;
+                
+                // Reset UI
+                document.getElementById('loginPage').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('userDashboard').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.add('hidden');
+                
+                // Clear forms
+                document.getElementById('loginForm').reset();
+                
+                // Destroy charts
+                if (attendanceChart) attendanceChart.destroy();
+                if (departmentChart) departmentChart.destroy();
+                if (statusChart) statusChart.destroy();
+            }
+        }
+    </script>
+</body>
+</html>
